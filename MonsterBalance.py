@@ -92,9 +92,9 @@ def modify_xml(xml_file, config_file):
 # Read the configuration from 'config.ini'
 modify_xml('MonsterList.xml', 'config.ini')
 
-# Mantén la consola abierta para ver la salida antes de cerrar
+# Keep the console open to see the output before closing
 if os.name == 'nt':  # Verificar si estamos en un sistema Windows
     import msvcrt
-    msvcrt.getch()  # Esperar a que se presione una tecla antes de cerrar
+    msvcrt.getch()  # Wait for a key to be pressed before closing
 else:
     input("MonsterList Generated! Now Press Enter to exit...")
