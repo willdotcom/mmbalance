@@ -19,4 +19,4 @@ This Python script utilizes the `xml.etree.ElementTree` library to modify an XML
 2. Run the script providing the XML file name (e.g., `MonsterList.xml`):
 
    ```bash
-   python modify_xml.py MonsterList.xml
+   python MonsterBalance.py MonsterList.xml
