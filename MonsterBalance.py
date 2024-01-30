@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import configparser
 import ctypes
+
 ico_path = 'C:\PythonMU/mu.ico'
 ctypes.windll.kernel32.SetConsoleIcon(ico_path)
 
@@ -15,6 +16,7 @@ def modify_xml(xml_file, config_file):
     percent_increase = bool(int(config['Monster']['PercentIncrease']))
     percent_decrease = bool(int(config['Monster']['PercentDecrease']))
     monster_min_level = int(config['Monster']['MonsterMinLevel'])
+    monster_max_level = int(config['Monster']['MonsterMaxLevel'])
 
     if percent_increase and percent_decrease:
         raise ValueError("Please choose either PercentIncrease or PercentDecrease, not both.")
@@ -67,7 +69,7 @@ def modify_xml(xml_file, config_file):
     for monster in root.findall(".//Monster"):
         level = int(monster.get("Level", 0))
 
-        if level >= monster_min_level:
+        if monster_min_level <= level <= monster_max_level:
             for attribute in attributes_to_modify:
                 original_value = monster.get(attribute)
 
@@ -89,12 +91,6 @@ def modify_xml(xml_file, config_file):
     tree.write("MonsterList_modified.xml")
     print(f"Total lines updated: {total_updated_lines}")
 
+
 # Read the configuration from 'config.ini'
 modify_xml('MonsterList.xml', 'config.ini')
-
-# Keep the console open to see the output before closing
-if os.name == 'nt':  # Verificar si estamos en un sistema Windows
-    import msvcrt
-    msvcrt.getch()  # Wait for a key to be pressed before closing
-else:
-    input("MonsterList Generated! Now Press Enter to exit...")
