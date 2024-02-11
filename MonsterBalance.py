@@ -15,8 +15,10 @@ def modify_xml(xml_file, config_file):
 
     percent_increase = bool(int(config['Monster']['PercentIncrease']))
     percent_decrease = bool(int(config['Monster']['PercentDecrease']))
-    monster_min_level = int(config['Monster']['MonsterMinLevel'])
-    monster_max_level = int(config['Monster']['MonsterMaxLevel'])
+    monster_min_index = int(config['Monster']['MonsterMinIndex'])
+    monster_max_index = int(config['Monster']['MonsterMaxIndex'])
+    monster_index_mod = bool(int(config['Monster']['MonsterIndexMod']))
+    monster_level_mod = bool(int(config['Monster']['MonsterLevelMod']))
 
     if percent_increase and percent_decrease:
         raise ValueError("Please choose either PercentIncrease or PercentDecrease, not both.")
@@ -68,8 +70,10 @@ def modify_xml(xml_file, config_file):
 
     for monster in root.findall(".//Monster"):
         level = int(monster.get("Level", 0))
+        index = int(monster.get("Index", 0))
 
-        if monster_min_level <= level <= monster_max_level:
+        if (monster_level_mod and monster_min_level <= level <= monster_max_level) or \
+           (monster_index_mod and monster_min_index <= index <= monster_max_index):
             for attribute in attributes_to_modify:
                 original_value = monster.get(attribute)
 
