@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+//==============================
+//  ModEnhancement Enable: Activate the system to make the modifications.
+//		PercentIncrease: Enable or Disable 0/1 | Increments the % value of the attribute in MonsterList.xml 
+//		PercentDecrease: Enable or Disable 0/1 | Reduces the % value of the attribute in MonsterList.xml 
+//		MonsterPercentChange: Values from 0 - 100 expresed in %
+//
+//  MonsterLevelSetting Enable: Enable or Disable the modification by Level ranges [0-1] 
+//  	MonsterMinLevel: Minimum Monster Level
+//  	MonsterMaxLevel: Maximum Monster Level
+//
+//  MonsterIndexSetting Enable: Enable or Disable the modification by Index ranges [0-1].
+//  	MonsterMinIndex: Minimum Index Monster 
+//  	MonsterMaxIndex: Maximum Index Monster 
+//
+//  MonsterMapSetting Enable: Enable or Disable modification of Monsters for specific maps. [0-1].
+//  	MapToChange List: Write the Map Number or Multiple maps, separated by commas (,).
+//  	Description: This option enables the possibility of modifying "All" Mobs that are already on the maps.
+//  	Ref: See MonsterSpawn.xml
+//==============================
+// 
+-->
+<ModEnhancement Enable="1" PercentIncrease="1" PercentDecrease="0" MonsterPercentChange="100">
+
+	<MonsterLevelSetting Enable="0" MonsterMinLevel="10" MonsterMaxLevel="200" />
+
+	<MonsterIndexSetting Enable="0" MonsterMinIndex="1" MonsterMaxIndex="3" />
+	
+	<MonsterMapSetting Enable="1">
+		<MapToChange List="0,1,2,3" />
+	</MonsterMapSetting>
+	
+	<MonsterListMod>
+		<Monster 
+			HP="1" 
+			MP="0" 
+			DamageMin="0" 
+			DamageMax="0" 
+			ExtraDamageMin="0" 
+			ExtraDamageMax="0" 
+			Defense="0" 
+			MagicDefense="0" 
+			ExtraDefense="0" 
+			AttackRate="0" 
+			BlockRate="0" 
+			MoveRange="0" 
+			AttackType="0" 
+			AttackRange="0" 
+			ViewRange="0" 
+			MoveSpeed="0" 
+			AttackSpeed="0" 
+			RegenTime="0" 
+			Attribute="0" 
+			IceRes="0" 
+			PoisonRes="0" 
+			LightRes="0" 
+			FireRes="0" 
+			PentagramMainAttrib="0" 
+			PentagramAttribPattern="0" 
+			PentagramDamageMin="0" 
+			PentagramDamageMax="0" 
+			PentagramAttackRate="0" 
+			PentagramDefenseRate="0" 
+			PentagramDefense="0" 
+			EliteMonster="0" 
+			PunishImmune="0" 
+			DamageAbsorption="0" 
+			CriticalDamageRes="0" 
+			ExcellentDamageRes="0" 
+			DebuffApplyRes="0" 
+			DamageCorrection="0" 
+		/>
+	</MonsterListMod>
+	
+</ModEnhancement>

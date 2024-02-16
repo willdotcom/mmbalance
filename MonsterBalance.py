@@ -1,30 +1,28 @@
 import xml.etree.ElementTree as ET
-import configparser
 import ctypes
 
 ico_path = 'C:\PythonMU/mu.ico'
 ctypes.windll.kernel32.SetConsoleIcon(ico_path)
 
 
-def modify_xml(xml_file, config_file):
+def modify_xml(xml_file, config_file, spawn_file):
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
-    config = configparser.ConfigParser()
-    config.read(config_file)
+    config_tree = ET.parse(config_file)
+    config_root = config_tree.getroot()
 
-    percent_increase = bool(int(config['Monster']['PercentIncrease']))
-    percent_decrease = bool(int(config['Monster']['PercentDecrease']))
-    monster_min_index = int(config['Monster']['MonsterMinIndex'])
-    monster_max_index = int(config['Monster']['MonsterMaxIndex'])
-    monster_index_mod = bool(int(config['Monster']['MonsterIndexMod']))
-    monster_level_mod = bool(int(config['Monster']['MonsterLevelMod']))
+    mod_enable = bool(int(config_root.get('Enable')))
+    percent_increase = bool(int(config_root.get('PercentIncrease')))
+    percent_decrease = bool(int(config_root.get('PercentDecrease')))
+    monster_percent_change = int(config_root.get('MonsterPercentChange'))
 
-    if percent_increase and percent_decrease:
-        raise ValueError("Please choose either PercentIncrease or PercentDecrease, not both.")
+    active_options = [option for option in ['MonsterLevelSetting', 'MonsterIndexSetting', 'MonsterMapSetting']
+                      if int(config_root.find(option).get('Enable'))]
 
-    if not percent_increase and not percent_decrease:
-        raise ValueError("Please choose either PercentIncrease or PercentDecrease.")
+    if len(active_options) != 1:
+        raise ValueError("Exactly one modification option (MonsterLevelSetting, MonsterIndexSetting, or MonsterMapSetting) "
+                         "should be enabled.")
 
     attributes_to_modify = [
         "HP",
@@ -72,16 +70,41 @@ def modify_xml(xml_file, config_file):
         level = int(monster.get("Level", 0))
         index = int(monster.get("Index", 0))
 
-        if (monster_level_mod and monster_min_level <= level <= monster_max_level) or \
-           (monster_index_mod and monster_min_index <= index <= monster_max_index):
+        if 'MonsterLevelSetting' in active_options:
+            enable_mod = bool(int(config_root.find('MonsterLevelSetting').get('Enable')))
+            min_val = int(config_root.find('MonsterLevelSetting').get('MonsterMinLevel'))
+            max_val = int(config_root.find('MonsterLevelSetting').get('MonsterMaxLevel'))
+            if enable_mod and min_val <= level <= max_val:
+                apply_modification = True
+            else:
+                apply_modification = False
+
+        elif 'MonsterIndexSetting' in active_options:
+            enable_mod = bool(int(config_root.find('MonsterIndexSetting').get('Enable')))
+            min_val = int(config_root.find('MonsterIndexSetting').get('MonsterMinIndex'))
+            max_val = int(config_root.find('MonsterIndexSetting').get('MonsterMaxIndex'))
+            if enable_mod and min_val <= index <= max_val:
+                apply_modification = True
+            else:
+                apply_modification = False
+
+        elif 'MonsterMapSetting' in active_options:
+            enable_mod = bool(int(config_root.find('MonsterMapSetting').get('Enable')))
+            maps_to_change = [int(m) for m in config_root.find('MonsterMapSetting/MapToChange').get('List').split(",")]
+            if enable_mod and index in get_monster_indices(spawn_file, maps_to_change):
+                apply_modification = True
+            else:
+                apply_modification = False
+
+        if apply_modification:
             for attribute in attributes_to_modify:
                 original_value = monster.get(attribute)
 
                 # Modify values based on chosen option
-                percentage_change = int(config['Monster']['MonsterPercentChange'])
-                if percent_increase and int(config['Monster'][attribute]):
+                percentage_change = monster_percent_change
+                if percent_increase and int(config_root.find('MonsterListMod').find('Monster').get(attribute)):
                     monster.set(attribute, str(int(float(original_value) * (1 + percentage_change / 100))))
-                elif percent_decrease and int(config['Monster'][attribute]):
+                elif percent_decrease and int(config_root.find('MonsterListMod').find('Monster').get(attribute)):
                     monster.set(attribute, str(int(float(original_value) * (1 - percentage_change / 100))))
 
             # Output message indicating the modifications
@@ -96,5 +119,18 @@ def modify_xml(xml_file, config_file):
     print(f"Total lines updated: {total_updated_lines}")
 
 
-# Read the configuration from 'config.ini'
-modify_xml('MonsterList.xml', 'config.ini')
+def get_monster_indices(spawn_file, maps_to_change):
+    indices = set()
+    spawn_tree = ET.parse(spawn_file)
+    spawn_root = spawn_tree.getroot()
+    for map_element in spawn_root.findall(".//Map"):
+        map_number = int(map_element.get("Number"))
+        if map_number in maps_to_change:
+            for spawn_element in map_element.findall(".//Spawn"):
+                monster_index = int(spawn_element.get("Index"))
+                indices.add(monster_index)
+    return indices
+
+
+# Read the configuration from 'config.xml'
+modify_xml('MonsterList.xml', 'config.xml', 'MonsterSpawn.xml')
