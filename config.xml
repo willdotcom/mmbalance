@@ -70,6 +70,7 @@
 			ExcellentDamageRes="0" 
 			DebuffApplyRes="0" 
 			DamageCorrection="0" 
+			ExpLevel="0"
 		/>
 	</MonsterListMod>
 	
