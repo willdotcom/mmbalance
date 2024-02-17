@@ -18,28 +18,44 @@
 //  	MapToChange List: Write the Map Number or Multiple maps, separated by commas (,).
 //  	Description: This option enables the possibility of modifying "All" Mobs that are already on the maps.
 //  	Ref: See MonsterSpawn.xml
+//
+//  ExcludeMobsSetting:
+//  	MobsToExclude NPCList: Write the NPC Index to exclude separated by commas (,).
+//  	MobsToExclude MobsList: Write the Mobs Index to exclude separated by commas (,).
 //==============================
 // 
 -->
-<ModEnhancement Enable="1" PercentIncrease="1" PercentDecrease="0" MonsterPercentChange="100">
-
+<ModEnhancement Enable="1" PercentIncrease="0" PercentDecrease="1" MonsterPercentChange="50">
+	
+	<!-- Min/Max Mobs Level Modification  -->
 	<MonsterLevelSetting Enable="0" MonsterMinLevel="10" MonsterMaxLevel="200" />
 
-	<MonsterIndexSetting Enable="0" MonsterMinIndex="1" MonsterMaxIndex="3" />
+	<!-- Min/Max Mobs Index Modification  -->
+	<MonsterIndexSetting Enable="0" MonsterMinIndex="794" MonsterMaxIndex="794" />
 	
 	<MonsterMapSetting Enable="1">
-		<MapToChange List="0,1,2,3" />
+	<!-- MapNumber List  -->
+		<MapToChange List="0" />
 	</MonsterMapSetting>
-	
+
+	<ExcludeMobsSetting>
+	<!-- NPC List to Exclude  -->
+		<MobsToExclude NPCList="226,240,249,257,375,543,547,584,764" />
+
+	<!-- Mobs List to Exclude  -->
+		<MobsToExclude MobsList="" /> 
+	</ExcludeMobsSetting>
+
+	<!-- Enable or Disable Attr to change on MonsterList.xml  -->
 	<MonsterListMod>
 		<Monster 
 			HP="1" 
 			MP="0" 
-			DamageMin="0" 
-			DamageMax="0" 
+			DamageMin="1" 
+			DamageMax="1" 
 			ExtraDamageMin="0" 
 			ExtraDamageMax="0" 
-			Defense="0" 
+			Defense="1" 
 			MagicDefense="0" 
 			ExtraDefense="0" 
 			AttackRate="0" 

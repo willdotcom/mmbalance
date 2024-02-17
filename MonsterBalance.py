@@ -67,10 +67,19 @@ def modify_xml(xml_file, config_file, spawn_file):
 
     total_updated_lines = 0
 
+    # Exclude Mobs Settings
+    mobs_to_exclude_npc = set(int(index) for index in config_root.find('ExcludeMobsSetting').find('MobsToExclude').get('NPCList', '').split(',') if index)
+    mobs_to_exclude_mobs = set(int(index) for index in config_root.find('ExcludeMobsSetting').find('MobsToExclude').get('MobsList', '').split(',') if index)
+
     for monster in root.findall(".//Monster"):
         level = int(monster.get("Level", 0))
         index = int(monster.get("Index", 0))
 
+        # Check if the monster should be excluded based on NPC list or Mobs list
+        if index in mobs_to_exclude_npc or index in mobs_to_exclude_mobs:
+            continue  # Skip this monster if it should be excluded
+
+        # Remaining logic for modification...
         if 'MonsterLevelSetting' in active_options:
             enable_mod = bool(int(config_root.find('MonsterLevelSetting').get('Enable')))
             min_val = int(config_root.find('MonsterLevelSetting').get('MonsterMinLevel'))
