@@ -61,7 +61,8 @@ def modify_xml(xml_file, config_file, spawn_file):
         "CriticalDamageRes",
         "ExcellentDamageRes",
         "DebuffApplyRes",
-        "DamageCorrection"
+        "DamageCorrection",
+        "ExpLevel"
     ]
 
     total_updated_lines = 0
