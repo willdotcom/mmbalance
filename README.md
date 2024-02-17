@@ -2,6 +2,9 @@
 
 This Python script utilizes the `xml.etree.ElementTree` library to modify an XML file based on IGCN configuration file. The goal is to adjust specific attributes of the `Monster` tags in the XML file.
 
+## Support Version
+- Season 18
+- Season 19
 
 ## To Build .exe
 - Use pyinstaller
