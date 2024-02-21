@@ -17,13 +17,14 @@ def modify_xml(xml_file, config_file, spawn_file):
     percent_decrease = bool(int(config_root.get('PercentDecrease')))
     monster_percent_change = int(config_root.get('MonsterPercentChange'))
 
-    active_options = [option for option in ['MonsterLevelSetting', 'MonsterIndexSetting', 'MonsterMapSetting']
+    active_options = [option for option in ['MonsterLevelSetting', 'MonsterIndexSetting', 'MonsterMapSetting', 'OnlyMonsterList']
                       if int(config_root.find(option).get('Enable'))]
 
     if len(active_options) != 1:
-        raise ValueError("Exactly one modification option (MonsterLevelSetting, MonsterIndexSetting, or MonsterMapSetting) "
+        raise ValueError("Exactly one modification option (MonsterLevelSetting, MonsterIndexSetting, MonsterMapSetting, or OnlyMonsterList) "
                          "should be enabled.")
 
+    # Define attributes to modify
     attributes_to_modify = [
         "HP",
         "MP",
@@ -71,6 +72,10 @@ def modify_xml(xml_file, config_file, spawn_file):
     mobs_to_exclude_npc = set(int(index) for index in config_root.find('ExcludeMobsSetting').find('MobsToExclude').get('NPCList', '').split(',') if index)
     mobs_to_exclude_mobs = set(int(index) for index in config_root.find('ExcludeMobsSetting').find('MobsToExclude').get('MobsList', '').split(',') if index)
 
+    # OnlyMonsterList Settings
+    only_monster_list_enable = bool(int(config_root.find('OnlyMonsterList').get('Enable', 0)))
+    mobs_to_modification = set(int(index) for index in config_root.find('OnlyMonsterList').find('MobsToModification').get('List', '').split(',') if index)
+
     for monster in root.findall(".//Monster"):
         level = int(monster.get("Level", 0))
         index = int(monster.get("Index", 0))
@@ -79,15 +84,18 @@ def modify_xml(xml_file, config_file, spawn_file):
         if index in mobs_to_exclude_npc or index in mobs_to_exclude_mobs:
             continue  # Skip this monster if it should be excluded
 
-        # Remaining logic for modification...
+        # Check if OnlyMonsterList is enabled and if the monster index is in the list
+        if only_monster_list_enable and index not in mobs_to_modification:
+            continue  # Skip this monster if it's not in the modification list
+
+        apply_modification = False
+
         if 'MonsterLevelSetting' in active_options:
             enable_mod = bool(int(config_root.find('MonsterLevelSetting').get('Enable')))
             min_val = int(config_root.find('MonsterLevelSetting').get('MonsterMinLevel'))
             max_val = int(config_root.find('MonsterLevelSetting').get('MonsterMaxLevel'))
             if enable_mod and min_val <= level <= max_val:
                 apply_modification = True
-            else:
-                apply_modification = False
 
         elif 'MonsterIndexSetting' in active_options:
             enable_mod = bool(int(config_root.find('MonsterIndexSetting').get('Enable')))
@@ -95,16 +103,17 @@ def modify_xml(xml_file, config_file, spawn_file):
             max_val = int(config_root.find('MonsterIndexSetting').get('MonsterMaxIndex'))
             if enable_mod and min_val <= index <= max_val:
                 apply_modification = True
-            else:
-                apply_modification = False
 
         elif 'MonsterMapSetting' in active_options:
             enable_mod = bool(int(config_root.find('MonsterMapSetting').get('Enable')))
             maps_to_change = [int(m) for m in config_root.find('MonsterMapSetting/MapToChange').get('List').split(",")]
             if enable_mod and index in get_monster_indices(spawn_file, maps_to_change):
                 apply_modification = True
-            else:
-                apply_modification = False
+
+        elif 'OnlyMonsterList' in active_options:
+            enable_mod = bool(int(config_root.find('OnlyMonsterList').get('Enable')))
+            if enable_mod and index in mobs_to_modification:
+                apply_modification = True
 
         if apply_modification:
             for attribute in attributes_to_modify:

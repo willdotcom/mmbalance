@@ -22,29 +22,29 @@
 //  ExcludeMobsSetting:
 //  	MobsToExclude NPCList: Write the NPC Index to exclude separated by commas (,).
 //  	MobsToExclude MobsList: Write the Mobs Index to exclude separated by commas (,).
+//
+//  OnlyMonsterList:
+//  	MobsToModification List: Write the NPC Index to Only Modification Mobs separated by commas (,).
 //==============================
 // 
 -->
 <ModEnhancement Enable="1" PercentIncrease="0" PercentDecrease="1" MonsterPercentChange="50">
-	
-	<!-- Min/Max Mobs Level Modification  -->
-	<MonsterLevelSetting Enable="0" MonsterMinLevel="10" MonsterMaxLevel="200" />
 
-	<!-- Min/Max Mobs Index Modification  -->
-	<MonsterIndexSetting Enable="0" MonsterMinIndex="794" MonsterMaxIndex="794" />
+	<MonsterLevelSetting Enable="0" MonsterMinLevel="1" MonsterMaxLevel="10" />
+	<MonsterIndexSetting Enable="0" MonsterMinIndex="1" MonsterMaxIndex="5" />
 	
-	<MonsterMapSetting Enable="1">
-	<!-- MapNumber List  -->
-		<MapToChange List="0" />
+	<MonsterMapSetting Enable="0">
+		<MapToChange List="" />
 	</MonsterMapSetting>
 
 	<ExcludeMobsSetting>
-	<!-- NPC List to Exclude  -->
-		<MobsToExclude NPCList="226,240,249,257,375,543,547,584,764" />
-
-	<!-- Mobs List to Exclude  -->
+		<MobsToExclude NPCList="226,240,249,257,375,543,547,584,764,725,582,370,238,681" />
 		<MobsToExclude MobsList="" /> 
 	</ExcludeMobsSetting>
+
+    <OnlyMonsterList Enable="1">
+        <MobsToModification List="921,922,923,924" />
+    </OnlyMonsterList>
 
 	<!-- Enable or Disable Attr to change on MonsterList.xml  -->
 	<MonsterListMod>
